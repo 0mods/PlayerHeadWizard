@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "team._0mods.phwzrd.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "mixins": [
+    "PlayerHeadItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
