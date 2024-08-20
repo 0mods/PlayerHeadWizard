@@ -1,3 +1,5 @@
+import java.nio.file.FileSystem
+
 plugins {
     id 'com.github.johnrengelman.shadow'
 }
@@ -46,4 +48,33 @@ shadowJar {
 
 remapJar {
     input.set shadowJar.archiveFile
+}
+
+unifiedPublishing {
+    project {
+        displayName = "Fabric [${rootProject.supported_versions}] ${rootProject.mod_publish_name}"
+        gameVersions = [rootProject.minecraft_version]
+        gameLoaders = ["fabric"]
+        mainPublication tasks.remapJar
+
+        def file = rootProject.file("token.data") as File
+
+        def t = file.exists() ? rootProject.file("token.data").readLines() : new ArrayList<String>()
+
+        var cfToken = !t.isEmpty() ? t.get(0) : ""
+
+        if (!cfToken.isEmpty()) {
+            curseforge {
+                token = cfToken
+                id = "1087714"
+            }
+        }
+        var mrToken = !t.isEmpty() ? t.get(1) : ""
+        if (!mrToken.isEmpty()) {
+            modrinth {
+                token = mrToken
+                id = "Vwq7vMlk"
+            }
+        }
+    }
 }

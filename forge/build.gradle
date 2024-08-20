@@ -53,3 +53,32 @@ shadowJar {
 remapJar {
     input.set shadowJar.archiveFile
 }
+
+unifiedPublishing {
+    project {
+        displayName = "Forge [${rootProject.supported_versions}] ${rootProject.mod_publish_name}"
+        gameVersions = [rootProject.minecraft_version]
+        gameLoaders = ["forge"]
+        mainPublication tasks.remapJar
+
+        def file = rootProject.file("token.data") as File
+
+        def t = file.exists() ? rootProject.file("token.data").readLines() : new ArrayList<String>()
+
+        var cfToken = !t.isEmpty() ? t.get(0) : ""
+
+        if (!cfToken.isEmpty()) {
+            curseforge {
+                token = cfToken
+                id = "1087714"
+            }
+        }
+        var mrToken = !t.isEmpty() ? t.get(1) : ""
+        if (!mrToken.isEmpty()) {
+            modrinth {
+                token = mrToken
+                id = "Vwq7vMlk"
+            }
+        }
+    }
+}
