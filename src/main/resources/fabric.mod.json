@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${mod_version}",
+  "name": "${display}",
+  "description": "Easy Head utility",
+  "authors": [
+    "AlgorithmLX"
+  ],
+  "contact": {
+  },
+  "license": "MIT",
+  "icon": "assets/phwizard/logo.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "team._0mods.phwizard.PlayerHeadWizard::onInit"
+    ]
+  },
+  "mixins": [
+    "player_wizard.mixins.json"
+  ],
+  "depends": {
+    "minecraft": "~${target_minecraft}"
+  }
+}

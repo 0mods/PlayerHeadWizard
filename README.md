@@ -1,2 +1,1 @@
-# PlayerHeadWizard
-Load you head when renaming in anvil!
+# Stonecutter template mod
