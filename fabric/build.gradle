@@ -57,6 +57,18 @@ unifiedPublishing {
         gameLoaders = ["fabric"]
         mainPublication tasks.remapJar
 
+        def builder = new StringBuilder()
+
+        if ((rootProject.file("changelog") as File).exists()) {
+            rootProject.file("changelog").readLines().forEach { a ->
+                builder.append(a).append("\n")
+            }
+        } else {
+            builder.append("")
+        }
+
+        changelog = builder.toString()
+
         def file = rootProject.file("token.data") as File
 
         def t = file.exists() ? rootProject.file("token.data").readLines() : new ArrayList<String>()
