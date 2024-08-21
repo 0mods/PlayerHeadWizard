@@ -1,5 +1,6 @@
 plugins {
     id 'com.github.johnrengelman.shadow'
+    id "me.shedaniel.unified-publishing"
 }
 
 loom {
@@ -56,7 +57,7 @@ remapJar {
 
 unifiedPublishing {
     project {
-        displayName = "Forge [${rootProject.supported_versions}] ${rootProject.mod_publish_name}"
+        displayName = "[Forge ${rootProject.supported_versions}] ${rootProject.mod_publish_name}"
         gameVersions = [rootProject.minecraft_version]
         gameLoaders = ["forge"]
         mainPublication tasks.remapJar
@@ -79,14 +80,18 @@ unifiedPublishing {
 
         var cfToken = !t.isEmpty() ? t.get(0) : ""
 
-        if (!cfToken.isEmpty()) {
+        /*if (!cfToken.isEmpty()) {
+            println("CF Loaded")
+            println("Token: $cfToken")
             curseforge {
                 token = cfToken
                 id = "1087714"
             }
-        }
+        }*/
         var mrToken = !t.isEmpty() ? t.get(1) : ""
         if (!mrToken.isEmpty()) {
+            println("MR Loaded")
+            println("Token: $mrToken")
             modrinth {
                 token = mrToken
                 id = "Vwq7vMlk"
