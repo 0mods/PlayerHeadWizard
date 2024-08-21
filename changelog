@@ -1,0 +1,1 @@
+Fixed crash when naming head with empty profile (profile=)
