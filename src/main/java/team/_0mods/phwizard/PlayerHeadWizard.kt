@@ -1,7 +1,7 @@
 package team._0mods.phwizard
 
 //? if fabric {
-/*import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -10,41 +10,51 @@ import net.fabricmc.loader.api.FabricLoader
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
-*///?}
+//?}
 
 //? if forge {
-import net.minecraftforge.common.ForgeConfigSpec
+/*import net.minecraftforge.common.ForgeConfigSpec
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
-//?}
+*///?}
+//? if neoforge {
+/*import net.neoforged.fml.ModContainer
+import net.neoforged.fml.common.Mod
+import net.neoforged.fml.config.ModConfig
+import net.neoforged.neoforge.common.ModConfigSpec
+*///?}
 
 // COMMON SIDE, DON'T TOUCH IT!
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-//? if forge
-@Mod(PlayerHeadWizard.ModId)
-class PlayerHeadWizard {
+//? if forge || neoforge
+/*@Mod(PlayerHeadWizard.ModId)*/
+class PlayerHeadWizard/*? if neoforge {*//*(container: ModContainer)*//*?}*/ {
     companion object {
         @JvmField var PREFIX = "profile="
         const val ModId = "playerwizard"
         @JvmField val LOGGER: Logger = LoggerFactory.getLogger(ModId)
 
         //? if fabric
-        /*@OptIn(ExperimentalSerializationApi::class)*/
+        @OptIn(ExperimentalSerializationApi::class)
         @JvmStatic
-        fun onInit() {
+        fun onInit(/*? if neoforge {*//*container: ModContainer*//*?}*/) {
             LOGGER.info("Initializing Player Head Wizard!")
-            //? if forge {
-            val b = ForgeConfigSpec.Builder()
+            //? if forge || neoforge {
+            /*val b = /^? if forge {^/ /^ForgeConfigSpec.Builder() ^//^?} elif neoforge {^/ ModConfigSpec.Builder() /^?}^/
             val str = b.define("rename_prefix", "profile=")
-            ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, b.build())
-            val prefix = str.get()
+            //? if forge {
+            /^ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, b.build())
+            ^///?} elif neoforge {
+            container.registerConfig(ModConfig.Type.STARTUP, b.build())
             //?}
+            val prefix = str.get()
+            *///?}
 
             //? if fabric {
-            /*val json = Json {
+            val json = Json {
                 encodeDefaults = true
                 allowComments = true
                 prettyPrintIndent = "  "
@@ -53,90 +63,91 @@ class PlayerHeadWizard {
 
             val config = Config().loadConfig(json, ModId)
             val prefix = config.prefix
-            *///?}
+            //?}
+            //? if fabric || forge
             PREFIX = prefix
         }
-    }
 
-    //? if forge {
-    init {
-        onInit()
-    }
-    //?}
+        //? if fabric {
+        private inline fun <reified T> T.loadConfig(json: Json, fileName: String): T {
+            LOGGER.debug("Loading config '$fileName'")
 
-    //? if fabric {
-    /*private inline fun <reified T> T.loadConfig(json: Json, fileName: String): T {
-        LOGGER.debug("Loading config '$fileName'")
+            val file = FabricLoader.getInstance().configDir.resolve("config/").toFile().resolve("$fileName.json")
 
-        val file = FabricLoader.getInstance().configDir.resolve("config/").toFile().resolve("$fileName.json")
-
-        return if (file.exists()) {
-            try {
-                decodeCfg(json, file)
-            } catch (e: Exception) {
-                LOGGER.error("Failed to load config with name ${file.canonicalPath}.")
-                LOGGER.warn("Regenerating config... Using defaults.")
-                backupFile(file)
-                file.delete()
+            return if (file.exists()) {
+                try {
+                    decodeCfg(json, file)
+                } catch (e: Exception) {
+                    LOGGER.error("Failed to load config with name ${file.canonicalPath}.")
+                    LOGGER.warn("Regenerating config... Using defaults.")
+                    backupFile(file)
+                    file.delete()
+                    encodeCfg(json, file)
+                    this
+                }
+            } else {
                 encodeCfg(json, file)
                 this
             }
-        } else {
-            encodeCfg(json, file)
-            this
         }
-    }
 
-    @OptIn(ExperimentalSerializationApi::class)
-    private inline fun <reified T> T.encodeCfg(json: Json, file: File) {
-        try {
-            if (!file.exists()) {
-                file.parentFile.mkdirs()
-                file.createNewFile()
+        @OptIn(ExperimentalSerializationApi::class)
+        private inline fun <reified T> T.encodeCfg(json: Json, file: File) {
+            try {
+                if (!file.exists()) {
+                    file.parentFile.mkdirs()
+                    file.createNewFile()
+                }
+
+                json.encodeToStream(this, file.outputStream())
+            } catch (e: FileSystemException) {
+                LOGGER.error("Failed to write config to file '$file'", e)
             }
+        }
 
-            json.encodeToStream(this, file.outputStream())
+        @OptIn(ExperimentalSerializationApi::class)
+        private inline fun <reified T> decodeCfg(json: Json, file: File): T = try {
+            json.decodeFromStream(file.inputStream())
         } catch (e: FileSystemException) {
-            LOGGER.error("Failed to write config to file '$file'", e)
-        }
-    }
-
-    @OptIn(ExperimentalSerializationApi::class)
-    private inline fun <reified T> decodeCfg(json: Json, file: File): T = try {
-        json.decodeFromStream(file.inputStream())
-    } catch (e: FileSystemException) {
-        LOGGER.error("Failed to read config from file '$file'", e)
-        throw e
-    }
-
-    private fun backupFile(original: File) {
-        val originalBakName = original.canonicalPath + ".bak"
-        var i = 0
-        var p: String
-        var bakFile = File(originalBakName)
-
-        while (true) {
-            if (bakFile.exists()) {
-                i++
-                p = "${original.canonicalPath}.bak$i"
-                bakFile = File(p)
-
-                continue
-            } else break
+            LOGGER.error("Failed to read config from file '$file'", e)
+            throw e
         }
 
-        val l = original.readLines()
+        private fun backupFile(original: File) {
+            val originalBakName = original.canonicalPath + ".bak"
+            var i = 0
+            var p: String
+            var bakFile = File(originalBakName)
 
-        BufferedWriter(FileWriter(bakFile, true)).use { w ->
-            l.forEach {
-                w.write(it)
-                w.newLine()
+            while (true) {
+                if (bakFile.exists()) {
+                    i++
+                    p = "${original.canonicalPath}.bak$i"
+                    bakFile = File(p)
+
+                    continue
+                } else break
             }
+
+            val l = original.readLines()
+
+            BufferedWriter(FileWriter(bakFile, true)).use { w ->
+                l.forEach {
+                    w.write(it)
+                    w.newLine()
+                }
+            }
+
+            bakFile.createNewFile()
         }
 
-        bakFile.createNewFile()
+        @Serializable private data class Config(val prefix: String = "profile=")
+        //?}
     }
 
-    @Serializable private data class Config(val prefix: String = "prefix=")
+    //? if forge || neoforge {
+    /*init {
+        onInit(/^? if neoforge {^/container/^?}^/)
+    }
     *///?}
 }

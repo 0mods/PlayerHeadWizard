@@ -30,12 +30,25 @@ val shadowLibrary: Configuration by configurations.creating {
 
 architectury {
     minecraft = minecraftVersion
-    platformSetupLoomIde()
-    common("forge", "fabric", "neoforge")
     when (modPlatform) {
         "fabric" -> fabric()
         "forge" -> forge()
         "neoforge" -> neoForge()
+    }
+}
+
+loom {
+    silentMojangMappingsLicense()
+    val awFile = rootProject.file("src/main/resources/$modId.accesswidener")
+    if (awFile.exists()) accessWidenerPath = awFile
+
+    when (modPlatform) {
+        "forge" -> forge {
+            convertAccessWideners = true
+            mixinConfig("$modId.mixins.json")
+            (this@loom as LoomGradleExtensionImpl).remapperExtensions.add(ForgeFixer)
+        }
+        "neoforge" -> neoForge {}
     }
 }
 
@@ -54,12 +67,6 @@ afterEvaluate {
 
         stonecutter.exclude("src/main/resources")
     }
-}
-
-loom {
-    silentMojangMappingsLicense()
-    val awFile = rootProject.file("src/main/resources/$modId.accesswidener")
-    if (awFile.exists()) accessWidenerPath = awFile
 }
 
 repositories {
@@ -96,6 +103,7 @@ dependencies {
 
         "forge" -> {
             when (minecraftVersion) {
+                "1.21" -> "forge"("net.minecraftforge:forge:${minecraftVersion}-51.0.33")
                 "1.20.6" -> "forge"("net.minecraftforge:forge:${minecraftVersion}-50.1.12")
                 "1.20" -> "forge"("net.minecraftforge:forge:${minecraftVersion}-46.0.14")
                 "1.19" -> "forge"("net.minecraftforge:forge:${minecraftVersion}-41.1.0")
@@ -103,7 +111,10 @@ dependencies {
         }
 
         "neoforge" -> {
-            "neoForge"("net.neoforged:neoforge:21.0.14-beta")
+            when (minecraftVersion) {
+                "1.21" -> "neoForge"("net.neoforged:neoforge:21.0.167")
+                "1.20.6" -> "neoForge"("net.neoforged:neoforge:20.6.119")
+            }
         }
     }
 
@@ -165,6 +176,13 @@ tasks {
 
         if (modPlatform == "forge" || modPlatform == "neoforge") {
             exclude("fabric.mod.json")
+
+            if (modPlatform == "forge") {
+                exclude("neoforge.mods.toml")
+            } else exclude("mods.toml")
+        } else {
+            exclude("neoforge.mods.toml")
+            exclude("mods.toml")
         }
 
         filesMatching(listOf("META-INF/mods.toml", "fabric.mod.json")) {

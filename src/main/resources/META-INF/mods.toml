@@ -9,9 +9,9 @@ version = "${version}"
 displayName = "PlayerWizard"
 authors = "AlgorithmLX"
 description = '''
-This is an example description! Tell everyone what your mod is about!
+Easy Head utility
 '''
-logoFile = "assets/phwizard/logo.png"
+logoFile = "logo.png"
 
 [[dependencies.playerwizard]]
 modId = "forge"

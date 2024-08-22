@@ -34,8 +34,8 @@ extensions.configure<StonecutterSettings> {
             for (it in loaders) vers("$version-$it", version)
         }
 
-//        mc("1.21", "fabric", "forge", "neoforge")
-//        mc("1.20.6", "fabric", "forge", "neoforge")
+        mc("1.21", "fabric", "forge", "neoforge")
+        mc("1.20.6", "fabric", "forge", "neoforge")
         mc("1.20", "fabric", "forge")
         mc("1.19", "fabric", "forge")
     }

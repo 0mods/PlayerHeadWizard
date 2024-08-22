@@ -1,0 +1,32 @@
+modLoader="javafml" #mandatory
+loaderVersion="[20.6,)" #mandatory
+license="MIT"
+#issueTrackerURL=""
+
+[[mods]]
+modId="playerwizard"
+version="${version}"
+displayName="PlayerWizard"
+logoFile="examplemod.png"
+authors="AlgorithmLX" #optional
+description='''Easy Head utility'''
+
+[[mixins]]
+config="playerwizard.mixins.json"
+
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
+[[dependencies.playerwizard]]
+modId="neoforge"
+type="required"
+versionRange="${neo_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.playerwizard]]
+modId="minecraft"
+type="required"
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

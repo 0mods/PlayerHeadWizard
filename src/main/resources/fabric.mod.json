@@ -10,7 +10,7 @@
   "contact": {
   },
   "license": "MIT",
-  "icon": "assets/phwizard/logo.png",
+  "icon": "logo.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -18,7 +18,7 @@
     ]
   },
   "mixins": [
-    "player_wizard.mixins.json"
+    "playerwizard.mixins.json"
   ],
   "depends": {
     "minecraft": "~${target_minecraft}"
