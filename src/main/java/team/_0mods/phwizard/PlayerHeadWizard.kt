@@ -1,7 +1,7 @@
 package team._0mods.phwizard
 
 //? if fabric {
-import kotlinx.serialization.ExperimentalSerializationApi
+/*import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.decodeFromStream
@@ -10,14 +10,14 @@ import net.fabricmc.loader.api.FabricLoader
 import java.io.BufferedWriter
 import java.io.File
 import java.io.FileWriter
-//?}
+*///?}
 
 //? if forge {
-/*import net.minecraftforge.common.ForgeConfigSpec
+import net.minecraftforge.common.ForgeConfigSpec
 import net.minecraftforge.fml.ModLoadingContext
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.config.ModConfig
-*///?}
+//?}
 //? if neoforge {
 /*import net.neoforged.fml.ModContainer
 import net.neoforged.fml.common.Mod
@@ -30,7 +30,7 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 //? if forge || neoforge
-/*@Mod(PlayerHeadWizard.ModId)*/
+@Mod(PlayerHeadWizard.ModId)
 class PlayerHeadWizard/*? if neoforge {*//*(container: ModContainer)*//*?}*/ {
     companion object {
         @JvmField var PREFIX = "profile="
@@ -38,23 +38,23 @@ class PlayerHeadWizard/*? if neoforge {*//*(container: ModContainer)*//*?}*/ {
         @JvmField val LOGGER: Logger = LoggerFactory.getLogger(ModId)
 
         //? if fabric
-        @OptIn(ExperimentalSerializationApi::class)
+        /*@OptIn(ExperimentalSerializationApi::class)*/
         @JvmStatic
         fun onInit(/*? if neoforge {*//*container: ModContainer*//*?}*/) {
             LOGGER.info("Initializing Player Head Wizard!")
             //? if forge || neoforge {
-            /*val b = /^? if forge {^/ /^ForgeConfigSpec.Builder() ^//^?} elif neoforge {^/ ModConfigSpec.Builder() /^?}^/
+            val b = /*? if forge {*/ ForgeConfigSpec.Builder() /*?} elif neoforge {*/ /*ModConfigSpec.Builder() *//*?}*/
             val str = b.define("rename_prefix", "profile=")
             //? if forge {
-            /^ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, b.build())
-            ^///?} elif neoforge {
-            container.registerConfig(ModConfig.Type.STARTUP, b.build())
-            //?}
-            val prefix = str.get()
+            ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, b.build())
+            //?} elif neoforge {
+            /*container.registerConfig(ModConfig.Type.STARTUP, b.build())
             *///?}
+            val prefix = str.get()
+            //?}
 
             //? if fabric {
-            val json = Json {
+            /*val json = Json {
                 encodeDefaults = true
                 allowComments = true
                 prettyPrintIndent = "  "
@@ -63,13 +63,13 @@ class PlayerHeadWizard/*? if neoforge {*//*(container: ModContainer)*//*?}*/ {
 
             val config = Config().loadConfig(json, ModId)
             val prefix = config.prefix
-            //?}
+            *///?}
             //? if fabric || forge
             PREFIX = prefix
         }
 
         //? if fabric {
-        private inline fun <reified T> T.loadConfig(json: Json, fileName: String): T {
+        /*private inline fun <reified T> T.loadConfig(json: Json, fileName: String): T {
             LOGGER.debug("Loading config '$fileName'")
 
             val file = FabricLoader.getInstance().configDir.resolve("config/").toFile().resolve("$fileName.json")
@@ -142,12 +142,12 @@ class PlayerHeadWizard/*? if neoforge {*//*(container: ModContainer)*//*?}*/ {
         }
 
         @Serializable private data class Config(val prefix: String = "profile=")
-        //?}
+        *///?}
     }
 
     //? if forge || neoforge {
-    /*init {
-        onInit(/^? if neoforge {^/container/^?}^/)
+    init {
+        onInit(/*? if neoforge {*//*container*//*?}*/)
     }
-    *///?}
+    //?}
 }
