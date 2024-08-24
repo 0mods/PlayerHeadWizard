@@ -83,8 +83,8 @@ repositories {
 }
 
 dependencies {
-    "minecraft"("com.mojang:minecraft:$minecraftVersion")
-    "mappings"(loom.layered {
+    minecraft("com.mojang:minecraft:$minecraftVersion")
+    mappings(loom.layered {
         officialMojangMappings()
         val mappingsVer = if (stonecutter.eval(minecraftVersion, ">=1.21")) "1.21:2024.07.28"
         else {
@@ -99,6 +99,13 @@ dependencies {
     when (modPlatform) {
         "fabric" -> {
             "modImplementation"("net.fabricmc:fabric-loader:0.15.11")
+            if (stonecutter.eval(minecraftVersion, ">=1.21"))
+                "modImplementation"("net.fabricmc.fabric-api:fabric-api:0.102.0+1.21")
+            else when (minecraftVersion) {
+                "1.20.6" -> "modImplementation"("net.fabricmc.fabric-api:fabric-api:0.100.8+1.20.6")
+                "1.20" -> "modImplementation"("net.fabricmc.fabric-api:fabric-api:0.83.0+1.20")
+                "1.19" -> "modImplementation"("net.fabricmc.fabric-api:fabric-api:0.58.0+1.19")
+            }
         }
 
         "forge" -> {

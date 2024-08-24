@@ -29,12 +29,11 @@ public abstract class HeadPatcher extends ItemCombinerMenu {
             method = "createResult",
             at = @At(
                     value = "INVOKE",
-                    //? if >=1.20.5 {
                     shift = At.Shift.AFTER,
+                    //? if >=1.20.5 {
                     target = "Lnet/minecraft/world/item/enchantment/EnchantmentHelper;setEnchantments(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/enchantment/ItemEnchantments;)V"
                     //?} else {
-                    /*shift = At.Shift.AFTER,
-                    target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z",
+                    /*target = "Lnet/minecraft/world/item/ItemStack;isEmpty()Z",
                     ordinal = 3
                     *///?}
             ),
@@ -42,11 +41,13 @@ public abstract class HeadPatcher extends ItemCombinerMenu {
     )
     //? if >=1.20.5 {
     public void createResultInject(CallbackInfo ci, ItemStack itemstack, int i, long j, int k, ItemStack itemstack2) {
-        StackHandleUtil.overwriteItemStack(itemstack2, PlayerHeadWizard.PREFIX, player);
+        var prefix = PlayerHeadWizard.getConfig().getCustomPrefix().getValue();
+        StackHandleUtil.overwriteItemStack(itemstack2, prefix.isEmpty() ? "profile=" : prefix, player);
     }
     //?} else {
     /*public void createResultInject(CallbackInfo ci, ItemStack itemStack, int _i, int _i1, int _i2, ItemStack itemStack1, ItemStack itemStack2, Map _map) {
-        StackHandleUtil.overwriteItemStack(itemStack1, PlayerHeadItem.TAG_SKULL_OWNER, PlayerHeadWizard.PREFIX);
+        var prefix = PlayerHeadWizard.getConfig().getCustomPrefix().getValue();
+        StackHandleUtil.overwriteItemStack(itemStack1, PlayerHeadItem.TAG_SKULL_OWNER, prefix.isEmpty() ? "profile=" : prefix);
     }
     *///?}
 }
