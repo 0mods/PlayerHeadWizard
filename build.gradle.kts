@@ -185,14 +185,16 @@ tasks {
             exclude("fabric.mod.json")
 
             if (modPlatform == "forge") {
-                exclude("neoforge.mods.toml")
-            } else exclude("mods.toml")
+                exclude("META-INF/neoforge.mods.toml")
+            } else if (modPlatform == "neoforge") {
+                exclude("META-INF/mods.toml")
+            }
         } else {
-            exclude("neoforge.mods.toml")
-            exclude("mods.toml")
+            exclude("META-INF/neoforge.mods.toml")
+            exclude("META-INF/mods.toml")
         }
 
-        filesMatching(listOf("META-INF/mods.toml", "fabric.mod.json")) {
+        filesMatching(listOf("META-INF/mods.toml", "fabric.mod.json", "META-INF/neoforge.mods.toml")) {
             expand(mapOf(
                 "version" to modVersion, "id" to modId, "mod_version" to modVersion,
                 "display" to modName, "target_minecraft" to minecraftVersion

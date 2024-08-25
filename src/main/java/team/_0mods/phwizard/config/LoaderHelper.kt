@@ -7,11 +7,11 @@ import kotlinx.serialization.json.encodeToStream
 import team._0mods.phwizard.PlayerHeadWizard.Companion.LOGGER
 
 //? if neoforge
-/*import net.neoforged.fml.loading.FMLPaths*/
+import net.neoforged.fml.loading.FMLPaths
 //? if forge
 /*import net.minecraftforge.fml.loading.FMLPaths*/
 //? if fabric
-import net.fabricmc.loader.api.FabricLoader
+/*import net.fabricmc.loader.api.FabricLoader*/
 
 import java.io.BufferedWriter
 import java.io.File
@@ -30,10 +30,10 @@ inline fun <reified T> T.loadConfig(json: Json, fileName: String): T {
 
     val file =
     //? if fabric {
-         FabricLoader.getInstance().configDir.toFile().resolve("$fileName.json") 
-    //?} elif forge || neoforge {
-        /*FMLPaths.CONFIGDIR.get().toFile().resolve("$fileName.json")
-    *///?}
+         /*FabricLoader.getInstance().configDir.toFile().resolve("$fileName.json") 
+    *///?} elif forge || neoforge {
+        FMLPaths.CONFIGDIR.get().toFile().resolve("$fileName.json")
+    //?}
     return if (file.exists()) {
         try {
             decodeCfg(json, file)

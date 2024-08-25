@@ -1,5 +1,5 @@
 modLoader="javafml" #mandatory
-loaderVersion="[20.6,)" #mandatory
+loaderVersion="[2,)" #mandatory
 license="MIT"
 #issueTrackerURL=""
 
@@ -7,7 +7,7 @@ license="MIT"
 modId="playerwizard"
 version="${version}"
 displayName="PlayerWizard"
-logoFile="examplemod.png"
+logoFile="logo.png"
 authors="AlgorithmLX" #optional
 description='''Easy Head utility'''
 
@@ -20,13 +20,13 @@ file="META-INF/accesstransformer.cfg"
 [[dependencies.playerwizard]]
 modId="neoforge"
 type="required"
-versionRange="${neo_version_range}"
+versionRange="[20.6,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.playerwizard]]
 modId="minecraft"
 type="required"
-versionRange="${minecraft_version_range}"
+versionRange="[1.20.6,)"
 ordering="NONE"
 side="BOTH"
